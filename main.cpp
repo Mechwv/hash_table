@@ -5,6 +5,7 @@
 #include "HashTable.h"
 #include <ctime>
 #include <random>
+#include <fstream>
 
 string keygen(int length){
     static const std::string alphabet = "abcdefghijklmnopqrstuvwxyz" ;
@@ -19,17 +20,22 @@ string keygen(int length){
 int main()
 {
     HashTable H;
+    int N = 1000;
     int i = 0;
-    while (i < 100000){
-        H.insert(keygen(3+i/1000), keygen(3+i/1000));
+    ofstream out("test.txt");
+    while (i < N){
+        out << keygen(3+i/1000) << " " << keygen(3+i/1000) << "\n";
         i++;
     }
-//    H.insert("zzzzzzzzz", "spat");
-//    H.insert("alphabet", "alfavit");
-//    H.insert("ara", "ara");
-//    H.insert("nose", "nos");
-//    H.insert("bongo", "bongo");
-//    H.insert("ballista", "ballista");
+    out.close();
+    ifstream in("test.txt");
+    string line1,line2;
+    i = 0;
+    while (i<N){
+        in >> line1 >> line2;
+        H.insert(line1,line2);
+        i++;
+    }
     cout << H;
     cout << H.getbuffer_size() << "\n";
     cout << H.getKollisions();
