@@ -6,6 +6,8 @@
 #include <ctime>
 #include <random>
 #include <fstream>
+#include <cstring>
+using namespace std;
 
 string keygen(int length){
     static const std::string alphabet = "abcdefghijklmnopqrstuvwxyz" ;
@@ -24,7 +26,7 @@ int main()
     int i = 0;
     ofstream out("test.txt");
     while (i < N){
-        out << keygen(3+i/1000) << " " << keygen(3+i/1000) << "\n";
+        out << keygen(3+i/100) << " " << keygen(3+i/100) << "\n";
         i++;
     }
     out.close();
@@ -33,7 +35,10 @@ int main()
     i = 0;
     while (i<N){
         in >> line1 >> line2;
-        H.insert(line1,line2);
+        char a[50], b[50];
+        strcpy(a,line1.c_str());
+        strcpy(b,line2.c_str());
+        H.insert(a,b);
         i++;
     }
     cout << H;

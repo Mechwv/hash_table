@@ -8,25 +8,25 @@ HashTable::HashTable()
 {
     _buffer_size = _default_size;
     _size = 0;
-    _arr = new Node[_buffer_size];
+    this->_arr = new Node[_buffer_size];
     for (int i = 0; i < _buffer_size; i++) {
-        _arr[i].key = "0";
-        _arr[i].value = "0";
-        _arr[i].isfree = true;
+        this->_arr[i].key[0] = '0';
+        this->_arr[i].value[0] = '0';
+        this->_arr[i].isfree = true;
     }
 }
-long long HashTable::hashfunc(string key) {
+long long HashTable::hashfunc(char key[50]) {
     const int p = 31;
     long long hash = 0, p_pow = 4;
     for (size_t i=0; i<3; ++i)
     {
-        hash += (key[i] - 'a' + 1) * p_pow;
+        hash += (key[i]) * p_pow;
         p_pow *= p;
     }
     return hash % _buffer_size;
 }
 
-bool HashTable::insert(string key1, string value1)
+bool HashTable::insert(char key1[50], char value1[50])
 {
     if (_size + 1 > int(_rehash_size * _buffer_size))
         resize();
@@ -36,16 +36,15 @@ bool HashTable::insert(string key1, string value1)
     int i = 0;
     bool flagIns = false;
     while (i < _buffer_size && !flagIns) {
-        if (_arr[h].value == value1)
+        if (this->_arr[h].value == value1)
             return false;
-        if (_arr[h].isfree == true) {
-            _arr[h].key = key1;
-            _arr[h].value = value1;
+        if (this->_arr[h].isfree == true) {
+            strcpy(this->_arr[h].key, key1);
+            strcpy(this->_arr[h].value, value1);
             flagIns = true;
             ++_size;
         }
         else {
-//            cout << "Kolliziya klucha" << key1;
             kollisions++;
             h++;
         }
@@ -62,30 +61,30 @@ void HashTable::resize() {
     _buffer_size = (int) (_buffer_size * 2);
     Node *newtable = new Node[_buffer_size];
     for (int i = 0; i < _buffer_size; i++){
-        newtable[i].key = '0';
-        newtable[i].value = '0';
+        newtable[i].key[0] = '0';
+        newtable[i].value[0] = '0';
         newtable[i].isfree = true;
     }
     for (int i = 0; i < oldTableSize; i++)
-        if (_arr[i].key != "0") {
-            newtable[i].key = _arr[i].key;
-            newtable[i].value = _arr[i].value;
+        if (this->_arr[i].key[0] != '0') {
+            strcpy(newtable[i].key, this->_arr[i].key);
+            strcpy(newtable[i].value, this->_arr[i].value);
             newtable[i].isfree = false;
         }
-    delete[] _arr;
-    _arr = newtable;
+    delete[] this->_arr;
+    this->_arr = newtable;
 }
 
 void HashTable::rehash()
 {
     int i = 0;
     bool flagIns = false;
-    long long h = hashfunc(_arr[i].key);
+    long long h = hashfunc(this->_arr[i].key);
     while (i < _buffer_size && !flagIns) {
-        if (_arr[i].key != "0"){
-            if (_arr[h].isfree) {
-                _arr[h].key = _arr[i].key;
-                _arr[h].value = _arr[i].value;
+        if (this->_arr[i].key[0] != '0'){
+            if (this->_arr[h].isfree) {
+                strcpy(this->_arr[h].key, this->_arr[i].key);
+                strcpy(this->_arr[h].value, this->_arr[i].value);
                 flagIns = true;
                 ++_size;
             }
@@ -103,7 +102,7 @@ void HashTable::rehash()
 ostream& operator<<(ostream& os, HashTable& H)
 {
     for (int i = 0; i < H.getbuffer_size(); i++) {
-//        if (H.getKey(i) != "0")
+//        if (H.getKey(i)[0] != '0')
             os << H.getKey(i) << ' ' << H.getValue(i) << endl;
     }
     return os;
@@ -111,23 +110,23 @@ ostream& operator<<(ostream& os, HashTable& H)
 
 HashTable::~HashTable()
 {
-    delete[] _arr;
+    delete[] this->_arr;
 }
 
 int HashTable::getKollisions() const {
     return kollisions;
 }
 
-int HashTable::find(string key) {
-    for (int i = hashfunc(key); i <_default_size; i++){
-        if (_arr[i].key == key)
+long long HashTable::find(char key[50]) {
+    for (long long i = hashfunc(key); i <_default_size; i++){
+        if (this->_arr[i].key == key)
             return i;
     }
     return 0;
 }
 
-void HashTable::Delete(string key) {
-    int i = find(key);
-    _arr[i].key = "0";
-    _arr[i].value = "0";
+void HashTable::Delete(char key[50]) {
+    long long i = find(key);
+    this->_arr[i].key[0] = '0';
+    this->_arr[i].value[0] = '0';
 }
