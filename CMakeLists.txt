@@ -3,4 +3,4 @@ project(Praktika)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Praktika HashTable.cpp HashTable.h main.cpp)
+add_executable(Praktika  test.cpp HashTable.cpp HashTable.h)
